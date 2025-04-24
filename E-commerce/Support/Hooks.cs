@@ -91,31 +91,70 @@ namespace Herokuapp.Support
         {
             try
             {
-                string allureResults = Path.Combine(AppContext.BaseDirectory, "allure-results");
+                // Go up to project root
+                string baseDir = AppContext.BaseDirectory;
+                string projectRoot = Path.GetFullPath(Path.Combine(baseDir, @"..\..\.."));
 
-                var startInfo = new ProcessStartInfo
+                string resultsPath = Path.Combine(projectRoot, "bin", "Debug", "net6.0", "allure-results");
+                string reportPath = Path.Combine(projectRoot, "Report");
+
+                Console.WriteLine($"📁 Project root: {projectRoot}");
+                Console.WriteLine($"📂 Allure results path: {resultsPath}");
+                Console.WriteLine($"📄 Final Report path: {reportPath}");
+
+                if (!Directory.Exists(resultsPath))
                 {
-                    FileName = "cmd.exe",
-                    Arguments = $"/c allure serve \"{allureResults}\"",
-                    UseShellExecute = false,
+                    Console.WriteLine("❌ Allure results folder not found.");
+                    return;
+                }
+
+                Directory.CreateDirectory(reportPath);
+
+                string script = $"allure generate \"{resultsPath}\" --single-file --clean -o \"{reportPath}\"";
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "powershell",
+                    Arguments = $"-Command \"{script}\"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
+                    UseShellExecute = false,
                     CreateNoWindow = true
                 };
 
-                var process = Process.Start(startInfo);
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-                process.WaitForExit();
+                using (var process = Process.Start(psi))
+                {
+                    string output = process.StandardOutput.ReadToEnd();
+                    string error = process.StandardError.ReadToEnd();
+                    process.WaitForExit();
 
-                Console.WriteLine("✅ Allure CLI Output:\n" + output);
-                Console.WriteLine("❌ Allure CLI Errors:\n" + error);
+                    Console.WriteLine("✅ Allure CLI Output:\n" + output);
+                    if (process.ExitCode != 0)
+                    {
+                        Console.WriteLine("❌ Allure CLI Error:\n" + error);
+                        return;
+                    }
+                }
+
+                // Automatically open the report in the default browser
+                string reportFilePath = Path.Combine(reportPath, "index.html");
+                if (File.Exists(reportFilePath))
+                {
+                    Process.Start(new ProcessStartInfo(reportFilePath) { UseShellExecute = true });
+                    Console.WriteLine($"🌐 Report opened: {reportFilePath}");
+                }
+                else
+                {
+                    Console.WriteLine("⚠️ Report file not found to open.");
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Failed to run Allure CLI: {ex.Message}");
+                Console.WriteLine($"❌ Failed during Allure report generation or opening: {ex.Message}");
             }
         }
+
+
 
         [AfterScenario]
         public void AfterScenario()
