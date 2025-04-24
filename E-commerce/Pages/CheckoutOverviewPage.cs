@@ -16,25 +16,14 @@ namespace Ecommerce.Pages
         public IWebElement Total => _driver.FindElement(By.ClassName("summary_total_label"));
         public IWebElement FinishButton => _driver.FindElement(By.Id("finish"));
 
-        public bool IsItemTotalDisplayed()
-        {
-            return ItemTotal.Displayed;
-        }
+        public bool IsItemTotalDisplayed() => ItemTotal.Displayed;
+        public bool IsTaxDisplayed() => Tax.Displayed;
+        public bool IsTotalDisplayed() => Total.Displayed;
 
-        public bool IsTaxDisplayed()
-        {
-            return Tax.Displayed;
-        }
-
-        public bool IsTotalDisplayed()
-        {
-            return Total.Displayed;
-        }
-
-
-        public void FinishOrder()
+        public CheckoutCompletePage FinishOrder()
         {
             FinishButton.Click();
+            return new CheckoutCompletePage(_driver);
         }
     }
 }

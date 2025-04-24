@@ -19,9 +19,10 @@ namespace Ecommerce.Pages
             return ConfirmationHeader.Text;
         }
 
-        public void ClickBackToHome()
+        public ProductsPage ClickBackToHome()
         {
             BackHomeButton.Click();
+            return new ProductsPage(_driver);
         }
     }
 }

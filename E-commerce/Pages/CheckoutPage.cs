@@ -16,35 +16,39 @@ namespace Ecommerce.Pages
         public IWebElement ZipCode => _driver.FindElement(By.Id("postal-code"));
         public IWebElement ContinueButton => _driver.FindElement(By.Id("continue"));
 
-        public void EnterFirstName(string firstName)
+        public CheckoutPage EnterFirstName(string firstName)
         {
             FirstName.Clear();
             FirstName.SendKeys(firstName);
+            return this;
         }
 
-        public void EnterLastName(string lastName)
+        public CheckoutPage EnterLastName(string lastName)
         {
             LastName.Clear();
             LastName.SendKeys(lastName);
+            return this;
         }
 
-        public void EnterZipCode(string zipCode)
+        public CheckoutPage EnterZipCode(string zipCode)
         {
             ZipCode.Clear();
             ZipCode.SendKeys(zipCode);
+            return this;
         }
 
-        public void ContinueCheckout()
+        public CheckoutOverviewPage ContinueCheckout()
         {
             ContinueButton.Click();
+            return new CheckoutOverviewPage(_driver);
         }
 
-        public void FillCheckoutDetails(string firstName, string lastName, string zipCode)
+        public CheckoutOverviewPage FillCheckoutDetails(string firstName, string lastName, string zipCode)
         {
-            EnterFirstName(firstName);
-            EnterLastName(lastName);
-            EnterZipCode(zipCode);
-            ContinueCheckout();
+            return EnterFirstName(firstName)
+                .EnterLastName(lastName)
+                .EnterZipCode(zipCode)
+                .ContinueCheckout();
         }
     }
 }

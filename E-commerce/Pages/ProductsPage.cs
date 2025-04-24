@@ -20,25 +20,26 @@ namespace Ecommerce.Pages
         private IWebElement CartBadge => _driver.FindElement(By.ClassName("shopping_cart_badge"));
         private IWebElement CartIcon => _driver.FindElement(By.ClassName("shopping_cart_link"));
 
-        
         public string GetPageTitle()
         {
             return Title.Text;
         }
 
-        public void SortBy(string option)
+        public ProductsPage SortBy(string option)
         {
             SortDropdown.Click();
             SortDropdown.FindElement(By.XPath($"//option[text()='{option}']")).Click();
+            return this;
         }
 
-        public void AddFirstNItemsToCart(int count)
+        public ProductsPage AddFirstNItemsToCart(int count)
         {
             var buttons = AddToCartButtons.Take(count);
             foreach (var button in buttons)
             {
                 button.Click();
             }
+            return this;
         }
 
         public int GetCartBadgeCount()
@@ -46,11 +47,10 @@ namespace Ecommerce.Pages
             return int.Parse(CartBadge.Text);
         }
 
-        public void ClickCartIcon()
+        public CartPage ClickCartIcon()
         {
             CartIcon.Click();
+            return new CartPage(_driver);
         }
-
-        
     }
 }

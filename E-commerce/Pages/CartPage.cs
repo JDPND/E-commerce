@@ -1,6 +1,6 @@
 ﻿using OpenQA.Selenium;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Ecommerce.Pages
 {
@@ -17,23 +17,23 @@ namespace Ecommerce.Pages
         public IWebElement CheckoutButton => _driver.FindElement(By.Id("checkout"));
         public IWebElement RemoveButton => _driver.FindElement(By.ClassName("cart_button"));
 
-
-
         public int GetCartItemCount()
         {
             int itemCount = CartItems.Count;
             Console.WriteLine($"Cart item count: {itemCount}");
-            return CartItems.Count;
+            return itemCount;
         }
 
-        public void RemoveFirstItem()
+        public CartPage RemoveFirstItem()
         {
             RemoveButton.Click();
+            return this;
         }
 
-        public void ClickCheckout()
+        public CheckoutPage ClickCheckout()
         {
             CheckoutButton.Click();
+            return new CheckoutPage(_driver);
         }
     }
 }
