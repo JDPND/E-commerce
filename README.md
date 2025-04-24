@@ -10,6 +10,7 @@ This repository contains an automated testing suite for an E-commerce site (**Sa
 - Rich visual reports using Allure
 - Screenshot capture on failure
 - WebDriverManager for automatic browser driver management
+- Fluent method chaining in Page Object Model for cleaner and more readable test logic
 
 ## 🧰 Tech Stack
 
@@ -25,7 +26,7 @@ This repository contains an automated testing suite for an E-commerce site (**Sa
 ```
 E-commerce/
 │
-├── allure-report/           # Generated Allure HTML report
+├── Report/                  # Single-file HTML Allure report (generated post-test)
 ├── bin/                     # Output binaries
 ├── obj/                     # Intermediate build files
 ├── Features/                # SpecFlow feature files (BDD scenarios)
@@ -34,7 +35,7 @@ E-commerce/
 ├── Support/                 # Hooks and helpers
 ├── specflow.json            # SpecFlow configuration
 ├── Ecommerce.csproj         # Project file
-└── run_allure.sh            # Script to generate Allure report
+└── run_allure.sh            # Script to manually regenerate Allure report
 ```
 
 ## 🧪 Test Scenario
@@ -73,16 +74,22 @@ E-commerce/
    dotnet test
    ```
 
-4. **Generate Allure Report**
-   Make sure Allure CLI is installed, then run:
+4. **Allure Report Generation**
+   The Allure report is automatically generated after test execution into the `Report/` folder using a single-file HTML output.
+
+   - The report opens automatically after tests complete (via built-in test hook)
+   - You can also manually regenerate it using:
+
    ```bash
-   ./run_allure.sh
+   allure generate bin/Debug/net6.0/allure-results --single-file --clean -o Report
    ```
 
-   Or manually:
+   Then open:
+
    ```bash
-   allure generate bin/Debug/net6.0/allure-results --clean -o allure-report
-   allure open allure-report
+   start Report/index.html  # (Windows)
+   open Report/index.html   # (macOS)
+   xdg-open Report/index.html  # (Linux)
    ```
 
 ## 📸 Screenshots on Failure
@@ -105,3 +112,4 @@ Failures automatically capture screenshots that are attached to the Allure repor
   - `@allure.description` for test step context
   - `@allure.link` for test case references (e.g., Jira, TestRail)
 - ✅ **Categorized reporting** (e.g., smoke, regression, checkout tests)
+
