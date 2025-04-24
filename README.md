@@ -105,7 +105,3 @@ Failures automatically capture screenshots that are attached to the Allure repor
   - `@allure.description` for test step context
   - `@allure.link` for test case references (e.g., Jira, TestRail)
 - ✅ **Categorized reporting** (e.g., smoke, regression, checkout tests)
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
